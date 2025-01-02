@@ -71,7 +71,7 @@
     <!-- Sidebar Navigation -->
     <div id="navbar" class="h-screen bg-[#FEFEFF] dark:bg-gray-800 transition-all duration-300 w-64 flex flex-col fixed left-0 top-0 z-50">
         <div class="flex items-center justify-between p-4">
-            <h2 class="text-xl font-semibold dark:text-white">User Portal</h2>
+            <h2 class="text-xl font-semibold dark:text-white">User  Portal</h2>
             <button id="toggleSidebar" class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700">
                 <i class="ri-menu-line text-xl dark:text-white"></i>
             </button>
@@ -98,7 +98,7 @@
 
         <div class="px-3 py-4 space-y-1">
             <a href="#" class="flex items-center p-2 rounded-lg hover:bg-light-blue dark:hover:bg-gray-700 group">
-                <i class="ri-settings-line text-xl mr-3 text-gray-700 group-hover:text-primary dark:text -gray-200"></i>
+                <i class="ri-settings-line text-xl mr-3 text-gray-700 group-hover:text-primary dark:text-gray-200"></i>
                 <span class="text-gray-700 group-hover:text-primary dark:text-gray-200">Settings</span>
             </a>
             <a href="#" class="flex items-center p-2 rounded-lg hover:bg-light-blue dark:hover:bg-gray-700 group">
@@ -191,15 +191,15 @@
                             <div class="space-y-2">
                                 <p id="myLocation" class="text-sm text-gray-600 dark:text-gray-400">
                                     <span class="font-medium">Location:</span> 
-                                    <!-- This will be updated with the dummy location -->
+                                    <!-- This will be updated with the user's location -->
                                 </p>
                                 <p id="myLocationLatitude" class="text-sm text-gray-600 dark:text-gray-400">
                                     <span class="font-medium">Latitude:</span> 
-                                    <!-- This will be updated with the dummy latitude -->
+                                    <!-- This will be updated with the user's latitude -->
                                 </p>
                                 <p id="myLocationLongitude" class="text-sm text-gray-600 dark:text-gray-400">
                                     <span class="font-medium">Longitude:</span> 
-                                    <!-- This will be updated with the dummy longitude -->
+                                    <!-- This will be updated with the user's longitude -->
                                 </p>
                             </div>
                         </div>
@@ -239,7 +239,7 @@
                                         <th scope="col" class="px-4 sm:px-6 py-3">Priority</th>
                                         <th scope="col" class="px-4 sm:px-6 py-3">Status</th>
                                         <th scope="col" class="px-4 sm:px-6 py-3">Location</th>
-                                        <th scope="col" class="px-4 sm:px-6 py-3"> Action</th>
+                                        <th scope="col" class="px-4 sm:px-6 py-3">Action</th>
                                     </tr>
                                 </thead>
                                 <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
@@ -310,7 +310,7 @@
                                             </span>
                                         </td>
                                         <td class="px-4 sm:px-6 py-4">
-                                            <span class="px-2 py-1 font-semibold leading-tight text-yellow-700 bg -yellow-100 rounded-full dark:bg-yellow-700 dark:text-yellow-100">
+                                            <span class="px-2 py-1 font-semibold leading-tight text-yellow-700 bg-yellow-100 rounded-full dark:bg-yellow-700 dark:text-yellow-100">
                                                 Pending
                                             </span>
                                         </td>
@@ -397,13 +397,13 @@
 
         // Update theme icon on load
         const isDark = html.classList.contains('dark');
-        toggleTheme.innerHTML = isDark ? '<i class="ri-moon-line text-xl text-white"></i>' : '<i class="ri-sun-line text-xl"></i>';
+        toggleTheme.innerHTML = isDark ? '<i class=" ri-moon-line text-xl text-white"></i>' : '<i class="ri-sun-line text-xl"></i>';
 
         // Initialize Leaflet map
         const map = L.map('map').setView([20, 0], 2);
 
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a > contributors'
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         }).addTo(map);
 
         // Function to update destination card and plot on map
@@ -430,12 +430,25 @@
             myLocationCoords = coords;
         }
 
-        // Function to get and set the dummy location
-        function getDummyLocation() {
-            const dummyLat = 9.176180158518068; // Dummy latitude
-            const dummyLon = 76.50097819037839;  // Dummy longitude
-            const locationText = "Kayamkulam"; // Label for the location
-            updateMyLocation([dummyLat, dummyLon], locationText); // Update the My Location card
+        // Function to get and set the user's current location
+        function getCurrentLocation() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                    (position) => {
+                        const coords = [position.coords.latitude, position.coords.longitude];
+                        const locationText = "Your Current Location"; // Label for the location
+                        updateMyLocation(coords, locationText); // Update the My Location card
+                        map.setView(coords, 15); // Set map view to user's location
+                        L.marker(coords).addTo(map).bindPopup(`<b>${locationText}</b>`).openPopup();
+                    },
+                    (error) => {
+                        console.error('Error getting location:', error);
+                        alert('Unable to retrieve your location. Please check your location settings.');
+                    }
+                );
+            } else {
+                alert('Geolocation is not supported by this browser.');
+            }
         }
 
         // Variable to store the routing control
@@ -479,7 +492,7 @@
                 selectedDestination = coords; // Set the selected destination coordinates
                 console.log(`Selected destination: ${label}`);
                 updateDestination(coords, label);
-                getDummyLocation(); // Ensure my location is set
+                getCurrentLocation(); // Ensure my location is set
             });
         });
 
@@ -487,8 +500,8 @@
         const showRouteBtn = document.getElementById('showRouteBtn');
         showRouteBtn.addEventListener('click', drawRoute);
 
-        // Call the function to set the dummy location initially
-        getDummyLocation();
+        // Call the function to get the user's current location initially
+        getCurrentLocation();
 
         // View switching
         const overviewBtn = document.getElementById('overviewBtn');
@@ -533,7 +546,7 @@
         function renderMessages() {
             messageList.innerHTML = messages.map(message => `
                 <div class="flex items-start space-x-4 ${message.sender === 'You' ? 'justify-end' : ''}">
-                    ${message.sender !== 'You' ? `<img src="https://via.placeholder.com/40" alt="User  Avatar" class="w-10 h-10 rounded-full">` : ''}
+                    ${message.sender !== 'You' ? `<img src="https://via.placeholder.com/40" alt="User Avatar" class="w-10 h-10 rounded-full">` : ''}
                     <div class="${message.sender === 'You' ? 'bg-primary text-white' : 'bg-gray-100 dark:bg-gray-700'} rounded-lg p-3 max-w-[70%]">
                         <p class="text-sm font-medium">${message.sender}</p>
                         <p class="text-sm">${message.content}</p>
@@ -557,6 +570,7 @@
                 messageList.scrollTop = messageList.scrollHeight;
             }
         });
+
         renderMessages();
     </script>
 </body>
