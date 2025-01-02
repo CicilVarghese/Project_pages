@@ -156,7 +156,6 @@
                     <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-4 sm:p-6 mb-6">
                         <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Location Overview</h2>
                         <div id="map"></div>
-                        <button id="showRouteBtn" class="mt-4 bg-primary text-white p-2 rounded-lg hover:bg-primary-hover">Show Route</button>
                     </div>
 
                     <!-- Stats Grid -->
@@ -463,48 +462,48 @@ function getCurrentLocation() {
         // Variable to store the routing control
         let routingControl = null;
 
-        // Function to draw route between My Location and Destination
-        function drawRoute() {
-            const destinationCoords = selectedDestination; // Use the selected destination coordinates
+ // Function to draw route between My Location and Destination
+function drawRoute() {
+    const destinationCoords = selectedDestination; // Use the selected destination coordinates
 
-            console.log('My Location Coords:', myLocationCoords);
-            console.log('Destination Coords:', destinationCoords);
+    console.log('My Location Coords:', myLocationCoords);
+    console.log('Destination Coords:', destinationCoords);
 
-            if (myLocationCoords && destinationCoords) {
-                // Remove the previous routing control if it exists
-                if (routingControl) {
-                    map.removeControl(routingControl);
-                }
-
-                // Create a new routing control
-                routingControl = L.Routing.control({
-                    waypoints: [
-                        L.latLng(myLocationCoords[0], myLocationCoords[1]),
-                        L.latLng(destinationCoords[0], destinationCoords[1])
-                    ],
-                    routeWhileDragging: true,
-                    lineOptions: {
-                        styles: [{ color: 'blue', opacity: 0.7, weight: 5 }]
-                    }
-                }).addTo(map);
-            } else {
-                console.error('Cannot draw route. Ensure both locations are set.');
-                alert('Please select a destination by clicking a view button first and ensure your location is set.');
-            }
+    if (myLocationCoords && destinationCoords) {
+        // Remove the previous routing control if it exists
+        if (routingControl) {
+            map.removeControl(routingControl);
         }
 
-        // Add event listeners to view buttons
-        document.querySelectorAll('button[data-coords]').forEach((btn) => {
-            btn.addEventListener('click', () => {
-                const coords = JSON.parse(btn.getAttribute('data-coords'));
-                const label = btn.getAttribute('data-label');
-                selectedDestination = coords; // Set the selected destination coordinates
-                console.log(`Selected destination: ${label}`);
-                updateDestination(coords, label);
-                getCurrentLocation(); // Ensure my location is set
-            });
-        });
+        // Create a new routing control
+        routingControl = L.Routing.control({
+            waypoints: [
+                L.latLng(myLocationCoords[0], myLocationCoords[1]),
+                L.latLng(destinationCoords[0], destinationCoords[1])
+            ],
+            routeWhileDragging: true,
+            lineOptions: {
+                styles: [{ color: 'blue', opacity: 0.7, weight: 5 }]
+            }
+        }).addTo(map);
+    } else {
+        console.error('Cannot draw route. Ensure both locations are set.');
+        alert('Please select a destination by clicking a view button first and ensure your location is set.');
+    }
+}
 
+// Add event listeners to view buttons
+document.querySelectorAll('button[data-coords]').forEach((btn) => {
+    btn.addEventListener('click', () => {
+        const coords = JSON.parse(btn.getAttribute('data-coords'));
+        const label = btn.getAttribute('data-label');
+        selectedDestination = coords; // Set the selected destination coordinates
+        console.log(`Selected destination: ${label}`);
+        updateDestination(coords, label);
+        getCurrentLocation(); // Ensure my location is set
+        drawRoute(); // Draw the route when the view button is clicked
+    });
+});
         // Add event listener to show route button
         const showRouteBtn = document.getElementById('showRouteBtn');
         showRouteBtn.addEventListener('click', drawRoute);
@@ -583,4 +582,4 @@ function getCurrentLocation() {
         renderMessages();
     </script>
 </body>
-</html>
+</html>    
