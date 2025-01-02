@@ -431,26 +431,35 @@
         }
 
         // Function to get and set the user's current location
-        function getCurrentLocation() {
-            if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(
-                    (position) => {
-                        const coords = [position.coords.latitude, position.coords.longitude];
-                        const locationText = "Your Current Location"; // Label for the location
-                        updateMyLocation(coords, locationText); // Update the My Location card
+       // Function to get and set the user's current location
+function getCurrentLocation() {
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+            (position) => {
+                const coords = [position.coords.latitude, position.coords.longitude];
+                // Call the Nominatim API to get the location name
+                fetch(`https://nominatim.openstreetmap.org/reverse?lat=${coords[0]}&lon=${coords[1]}&format=json`)
+                    .then(response => response.json())
+                    .then(data => {
+                        const locationText = data.display_name; // Get the location name from the response
+                        updateMyLocation(coords, locationText); // Update the My Location card with the exact location
                         map.setView(coords, 15); // Set map view to user's location
                         L.marker(coords).addTo(map).bindPopup(`<b>${locationText}</b>`).openPopup();
-                    },
-                    (error) => {
-                        console.error('Error getting location:', error);
-                        alert('Unable to retrieve your location. Please check your location settings.');
-                    }
-                );
-            } else {
-                alert('Geolocation is not supported by this browser.');
+                    })
+                    .catch(error => {
+                        console.error('Error fetching location name:', error);
+                        alert('Unable to retrieve location name.');
+                    });
+            },
+            (error) => {
+                console.error('Error getting location:', error);
+                alert('Unable to retrieve your location. Please check your location settings.');
             }
-        }
-
+        );
+    } else {
+        alert('Geolocation is not supported by this browser.');
+    }
+}
         // Variable to store the routing control
         let routingControl = null;
 
