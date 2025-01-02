@@ -249,6 +249,32 @@
                                     <tr class="bg-white dark:bg-gray-800">
                                         <td class="px-4 sm:px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                                             <div class="flex items-center">
+                                                <i class="ri-file-upload-line text-primary mr-2"></i>
+                                                <span>Location Update</span>
+                                            </div>
+                                        </td>
+                                        <td class="px-4 sm:px-6 py-4">System</td>
+                                        <td class="px-4 sm:px-6 py-4">1 hour ago</td>
+                                        <td class="px-4 sm:px-6 py-4">
+                                            <span class="px-2 py-1 font-semibold leading-tight text-orange-700 bg-orange-100 rounded-full dark:bg-orange-700 dark:text-orange-100">
+                                                Medium
+                                            </span>
+                                        </td>
+                                        <td class="px-4 sm:px-6 py-4">
+                                            <span class="px-2 py-1 font-semibold leading-tight text-green-700 bg-green-100 rounded-full dark:bg-green-700 dark:text-green-100">
+                                                Complete
+                                            </span>
+                                        </td>
+                                        <td class="px-4 sm:px-6 py-4">Manakala</td>
+                                        <td class="px-4 sm:px-6 py-4">
+                                            <button class="flex items-center text-blue-600 hover:text-blue-900 dark:text-blue-400 dark:hover:text-blue-200" data-coords="[9.13265715567626, 76.71883411284408]" data-label="Manakala, India">
+                                                <i class="ri-eye-line mr-1"></i> View
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    <tr class="bg-white dark:bg-gray-800">
+                                        <td class="px-4 sm:px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                            <div class="flex items-center">
                                                 <i class="ri-message-2-line text-primary mr-2"></i>
                                                 <span>New Message</span>
                                             </div>
@@ -446,8 +472,8 @@
             document.getElementById('destinationLatitude').innerHTML = `<span class="font-medium">Latitude:</span> ${coords[0]}° N`;
             document.getElementById('destinationLongitude').innerHTML = `<span class="font-medium">Longitude:</span> ${coords[1]}° E`;
 
-            // Update map view and marker
-            map.setView(coords, 10);
+            // Update map view and marker with higher zoom level
+            map.setView(coords, 18); // Increase zoom level to 15
             L.marker(coords).addTo(map).bindPopup(`<b>${label}</b>`).openPopup();
         }
 
