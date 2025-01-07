@@ -4,10 +4,21 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>User Dashboard</title>
+    
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Remix Icon -->
     <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+    
+    <!-- Leaflet CSS -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine/dist/leaflet-routing-machine.css" />
+    
+    <!-- Leaflet JS -->
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/leaflet-routing-machine/dist/leaflet-routing-machine.js"></script>
+    
     <script>
         tailwind.config = {
             darkMode: 'class',
@@ -23,27 +34,33 @@
             }
         }
     </script>
+    
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        
         body {
             font-family: 'Inter', sans-serif;
         }
+        
         #map {
-            height: 300px;
+            height: 600px;
             width: 100%;
             border-radius: 0.5rem;
             z-index: 1;
         }
+        
         @media (min-width: 768px) {
             #map {
                 height: 400px;
             }
         }
+        
         .sticky-header {
             position: sticky;
             top: 0;
             z-index: 1000;
         }
+        
         .content-below-header {
             position: relative;
             z-index: 1;
@@ -51,9 +68,10 @@
     </style>
 </head>
 <body class="bg-gray-100 dark:bg-gray-900 flex">
+    <!-- Sidebar Navigation -->
     <div id="navbar" class="h-screen bg-[#FEFEFF] dark:bg-gray-800 transition-all duration-300 w-64 flex flex-col fixed left-0 top-0 z-50">
         <div class="flex items-center justify-between p-4">
-            <h2 class="text-xl font-semibold dark:text-white">UserPortal</h2>
+            <h2 class="text-xl font-semibold dark:text-white">User  Portal</h2>
             <button id="toggleSidebar" class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700">
                 <i class="ri-menu-line text-xl dark:text-white"></i>
             </button>
@@ -91,7 +109,7 @@
 
         <div class="p-4 mt-auto border-t border-gray-200 dark:border-gray-700">
             <div class="flex items-center">
-                <img src="https://via.placeholder.com/40" alt="User" class="w-10 h-10 rounded-full">
+                <img src="https://via.placeholder.com/40" alt="User " class="w-10 h-10 rounded-full">
                 <div class="ml-3">
                     <p class="text-sm font-medium text-gray-700 dark:text-gray-200">John Doe</p>
                     <p class="text-xs text-gray-500 dark:text-gray-400">john@example.com</p>
@@ -100,6 +118,7 @@
         </div>
     </div>
 
+    <!-- Main Content -->
     <div class="flex-1 ml-64 transition-all duration-300">
         <header class="bg-[#FEFEFF] dark:bg-gray-800 shadow-sm sticky-header">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -137,6 +156,7 @@
                     <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-4 sm:p-6 mb-6">
                         <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Location Overview</h2>
                         <div id="map"></div>
+                        <button id="showRouteBtn" class="mt-4 bg-primary text-white p-2 rounded-lg hover:bg-primary-hover">Show Route</button>
                     </div>
 
                     <!-- Stats Grid -->
@@ -169,18 +189,21 @@
                                 <i class="ri-map-pin-user-fill text-2xl text-primary"></i>
                             </div>
                             <div class="space-y-2">
-                                <p class="text-sm text-gray-600 dark:text-gray-400">
-                                    <span class="font-medium">Location:</span> New York City, USA
+                                <p id="myLocation" class="text-sm text-gray-600 dark:text-gray-400">
+                                    <span class="font-medium">Location:</span> 
+                                    <!-- This will be updated with the user's location -->
                                 </p>
-                                <p class="text-sm text-gray-600 dark:text-gray-400">
-                                    <span class="font-medium">Latitude:</span> 40.7128° N
+                                <p id="myLocationLatitude" class="text-sm text-gray-600 dark:text-gray-400">
+                                    <span class="font-medium">Latitude:</span> 
+                                    <!-- This will be updated with the user's latitude -->
                                 </p>
-                                <p class="text-sm text-gray-600 dark:text-gray-400">
-                                    <span class="font-medium">Longitude:</span> 74.0060° W
+                                <p id="myLocationLongitude" class="text-sm text-gray-600 dark:text-gray-400">
+                                    <span class="font-medium">Longitude:</span> 
+                                    <!-- This will be updated with the user's longitude -->
                                 </p>
                             </div>
                         </div>
-
+                        
                         <!-- Destination Box -->
                         <div id="destinationCard" class="bg-white dark:bg-gray-800 rounded-lg p-4 sm:p-6 shadow-sm">
                             <div class="flex items-center justify-between mb-4">
@@ -239,9 +262,9 @@
                                                 Complete
                                             </span>
                                         </td>
-                                        <td class="px-4 sm:px-6 py-4">New York</td>
+                                        <td class="px-4 sm:px-6 py-4">Pandalam</td>
                                         <td class="px-4 sm:px-6 py-4">
-                                            <button class="flex items-center text-blue-600 hover:text-blue-900 dark:text-blue-400 dark:hover:text-blue-200" data-coords="[40.7128, -74.0060]" data-label="New York City, USA">
+                                            <button class="flex items-center text-blue-600 hover:text-blue-900 dark:text-blue-400 dark:hover:text-blue-200" data-coords="[9.22520411065322, 76.67762364427]" data-label="Pandalam">
                                                 <i class="ri-eye-line mr-1"></i> View
                                             </button>
                                         </td>
@@ -279,7 +302,7 @@
                                                 <span>New Message</span>
                                             </div>
                                         </td>
-                                        <td class="px-4 sm:px-6 py-4">User</td>
+                                        <td class="px-4 sm:px-6 py-4">User </td>
                                         <td class="px-4 sm:px-6 py-4">1 day ago</td>
                                         <td class="px-4 sm:px-6 py-4">
                                             <span class="px-2 py-1 font-semibold leading-tight text-red-700 bg-red-100 rounded-full dark:bg-red-700 dark:text-red-100">
@@ -291,9 +314,9 @@
                                                 Pending
                                             </span>
                                         </td>
-                                        <td class="px-4 sm:px-6 py-4">Paris</td>
+                                        <td class="px-4 sm:px-6 py-4">Pathanamthitta</td>
                                         <td class="px-4 sm:px-6 py-4">
-                                            <button class="flex items-center text-blue-600 hover:text-blue-900 dark:text-blue-400 dark:hover:text-blue-200" data-coords="[48.8566, 2.3522]" data-label="Paris, France">
+                                            <button class="flex items-center text-blue-600 hover:text-blue-900 dark:text-blue-400 dark:hover:text-blue-200" data-coords="[9.265918550678592, 76.78355345770082]" data-label="Pathanamthitta">
                                                 <i class="ri-eye-line mr-1"></i> View
                                             </button>
                                         </td>
@@ -374,7 +397,7 @@
 
         // Update theme icon on load
         const isDark = html.classList.contains('dark');
-        toggleTheme.innerHTML = isDark ? '<i class="ri-moon-line text-xl text-white"></i>' : '<i class="ri-sun-line text-xl"></i>';
+        toggleTheme.innerHTML = isDark ? '<i class=" ri-moon-line text-xl text-white"></i>' : '<i class="ri-sun-line text-xl"></i>';
 
         // Initialize Leaflet map
         const map = L.map('map').setView([20, 0], 2);
@@ -383,18 +406,111 @@
             attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         }).addTo(map);
 
-        const locations = [
-            { coords: [40.7128, -74.0060], label: 'New York City, USA' },
-            { coords: [48.8566, 2.3522], label: 'Paris, France' },
-            { coords: [35.6762, 139.6503], label: 'Tokyo, Japan' }
-        ];
+        // Function to update destination card and plot on map
+        function updateDestination(coords, label) {
+            document.getElementById('destinationLocation').innerHTML = `<span class="font-medium">Location:</span> ${label}`;
+            document.getElementById('destinationLatitude').innerHTML = `<span class="font-medium">Latitude:</span> ${coords[0]}° N`;
+            document.getElementById('destinationLongitude').innerHTML = `<span class="font-medium">Longitude:</span> ${coords[1]}° E`;
 
-        locations.forEach(location => {
-            L.marker(location.coords)
-                .addTo(map)
-                .bindPopup(`<b>${location.label}</b>`)
-                .openPopup();
-        });
+            // Update map view and marker with higher zoom level
+            map.setView(coords, 18); // Increase zoom level to 18
+            L.marker(coords).addTo(map).bindPopup(`<b>${label}</b>`).openPopup();
+        }
+
+        // Initialize myLocationCoords as null
+        let myLocationCoords = null;
+
+        // Function to update My Location
+        function updateMyLocation(coords, label) {
+            document.getElementById('myLocation').innerHTML = `<span class="font-medium">Location:</span> ${label}`;
+            document.getElementById('myLocationLatitude').innerHTML = `<span class="font-medium">Latitude:</span> ${coords[0]}° N`;
+            document.getElementById('myLocationLongitude').innerHTML = `<span class="font-medium">Longitude:</span> ${coords[1]}° E`;
+            
+            // Update the myLocationCoords variable with the new coordinates
+            myLocationCoords = coords;
+        }
+
+        // Function to get and set the user's current location
+       // Function to get and set the user's current location
+function getCurrentLocation() {
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+            (position) => {
+                const coords = [position.coords.latitude, position.coords.longitude];
+                // Call the Nominatim API to get the location name
+                fetch(`https://nominatim.openstreetmap.org/reverse?lat=${coords[0]}&lon=${coords[1]}&format=json`)
+                    .then(response => response.json())
+                    .then(data => {
+                        const locationText = data.display_name; // Get the location name from the response
+                        updateMyLocation(coords, locationText); // Update the My Location card with the exact location
+                        map.setView(coords, 15); // Set map view to user's location
+                        L.marker(coords).addTo(map).bindPopup(`<b>${locationText}</b>`).openPopup();
+                    })
+                    .catch(error => {
+                        console.error('Error fetching location name:', error);
+                        alert('Unable to retrieve location name.');
+                    });
+            },
+            (error) => {
+                console.error('Error getting location:', error);
+                alert('Unable to retrieve your location. Please check your location settings.');
+            }
+        );
+    } else {
+        alert('Geolocation is not supported by this browser.');
+    }
+}
+        // Variable to store the routing control
+        let routingControl = null;
+
+ // Function to draw route between My Location and Destination
+function drawRoute() {
+    const destinationCoords = selectedDestination; // Use the selected destination coordinates
+
+    console.log('My Location Coords:', myLocationCoords);
+    console.log('Destination Coords:', destinationCoords);
+
+    if (myLocationCoords && destinationCoords) {
+        // Remove the previous routing control if it exists
+        if (routingControl) {
+            map.removeControl(routingControl);
+        }
+
+        // Create a new routing control
+        routingControl = L.Routing.control({
+            waypoints: [
+                L.latLng(myLocationCoords[0], myLocationCoords[1]),
+                L.latLng(destinationCoords[0], destinationCoords[1])
+            ],
+            routeWhileDragging: true,
+            lineOptions: {
+                styles: [{ color: 'blue', opacity: 0.7, weight: 5 }]
+            }
+        }).addTo(map);
+    } else {
+        console.error('Cannot draw route. Ensure both locations are set.');
+        alert('Please select a destination by clicking a view button first and ensure your location is set.');
+    }
+}
+
+// Add event listeners to view buttons
+document.querySelectorAll('button[data-coords]').forEach((btn) => {
+    btn.addEventListener('click', () => {
+        const coords = JSON.parse(btn.getAttribute('data-coords'));
+        const label = btn.getAttribute('data-label');
+        selectedDestination = coords; // Set the selected destination coordinates
+        console.log(`Selected destination: ${label}`);
+        updateDestination(coords, label);
+        getCurrentLocation(); // Ensure my location is set
+        drawRoute(); // Draw the route when the view button is clicked
+    });
+});
+        // Add event listener to show route button
+        const showRouteBtn = document.getElementById('showRouteBtn');
+        showRouteBtn.addEventListener('click', drawRoute);
+
+        // Call the function to get the user's current location initially
+        getCurrentLocation();
 
         // View switching
         const overviewBtn = document.getElementById('overviewBtn');
@@ -465,26 +581,6 @@
         });
 
         renderMessages();
-
-        // Function to update destination card and plot on map
-        function updateDestination(coords, label) {
-            document.getElementById('destinationLocation').innerHTML = `<span class="font-medium">Location:</span> ${label}`;
-            document.getElementById('destinationLatitude').innerHTML = `<span class="font-medium">Latitude:</span> ${coords[0]}° N`;
-            document.getElementById('destinationLongitude').innerHTML = `<span class="font-medium">Longitude:</span> ${coords[1]}° E`;
-
-            // Update map view and marker with higher zoom level
-            map.setView(coords, 18); // Increase zoom level to 15
-            L.marker(coords).addTo(map).bindPopup(`<b>${label}</b>`).openPopup();
-        }
-
-        // Add event listeners to "View" buttons
-        document.querySelectorAll('button[data-coords]').forEach(button => {
-            button.addEventListener('click', () => {
-                const coords = JSON.parse(button.getAttribute('data-coords'));
-                const label = button.getAttribute('data-label');
-                updateDestination(coords, label);
-            });
-        });
     </script>
 </body>
-</html>
+</html>    
